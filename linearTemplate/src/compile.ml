@@ -11,27 +11,28 @@ open Progmath
 open Eval
 open Gen_dot
 
+let usage_msg =  Filename.basename Sys.argv.(0) ^ " [options] file"
 
 let _ =
-  if Array.length Sys.argv <= 1 then Printf.eprintf "Error: please specify an input file.\n" else
-  let in_file = Array.get Sys.argv 1 in
-  let rec search_argv s l = match l with
-    | x::y::l' ->
-       (match x with
-        | s' when s' = s -> Some y
-        | s' -> search_argv s (y::l'))
-    | _ -> None in
-  let argvtl = List.tl @@ List.tl @@ Array.to_list Sys.argv in
-  let out_file =
-    match search_argv "-o" @@  argvtl with
-    | None -> (try Filename.chop_extension (Filename.basename in_file) with _ -> in_file) ^ ".mod"
-    | Some o -> o in
-  let order =
-    match search_argv "-order"  argvtl with
-    | None -> print_endline "order = 2"; 2
-    | Some order_s -> int_of_string order_s in
-  let debug = List.mem "-debug" argvtl in
-  if order <= 0  then Printf.eprintf "Error: order should be positive.\n" else
+  let out_file = ref "" in
+  let order = ref 2 in
+  let in_file = ref "" in
+  let debug = ref false in
+  Arg.parse [
+    ("-o", Set_string out_file, "FILENAME  Output into FILENAME");
+    ("-order", Set_int order, "K  Use ranking supermartingale for K-th moment (default: K = 2)");
+    ("-debug", Set debug, " Set debug mode on")
+  ] (fun s -> match !in_file with
+      | "" -> in_file := s
+      | _ -> failwith "one file at a time") usage_msg;
+  let in_file = match !in_file with
+    | "" -> failwith "no input file"
+    | s -> s in
+  let out_file = match !out_file with
+    | "" -> (try Filename.chop_extension (Filename.basename in_file) with _ -> in_file) ^ ".mod"
+    | s -> s in
+  let order = if !order <= 0 then failwith "order must be positive" else !order in
+  let debug = !debug in
   let ic = open_in in_file in
   try 
     let prog = Parser.program Lexer.main (Lexing.from_channel ic) in

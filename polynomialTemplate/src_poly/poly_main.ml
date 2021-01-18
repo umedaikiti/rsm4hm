@@ -15,41 +15,39 @@ open Eval
     <example_name>_<pcfg|pp>
 *)
 
+let usage_msg =  Filename.basename Sys.argv.(0) ^ " [options] file"
+
 let _ =
-  if Array.length Sys.argv <= 1 then Printf.eprintf "Error: please specify an input file.\n" else
-  if Array.get Sys.argv 1 = "-distr_usage" then print_endline distributions_usage else
-  let in_file = Array.get Sys.argv 1 in
-  let rec search_argv s l = match l with
-    | x::y::l' ->
-       (match x with
-        | s' when s' = s -> Some y
-        | s' -> search_argv s (y::l'))
-    | _ -> None in
-  let argvtl = List.tl @@ List.tl @@ Array.to_list Sys.argv in
-  let template_deg = 
-    match search_argv "-deg"  argvtl with
-    | None -> print_endline "template degree = 2"; 2
-    | Some deg -> int_of_string deg in
-  let julia = List.mem "-julia" argvtl in
-  let order =
-    match search_argv "-order"  argvtl with
-    | None -> print_endline "order = 2"; 2
-    | Some order_s -> int_of_string order_s in
+  let out_file = ref "" in
+  let order = ref 2 in
+  let in_file = ref "" in
+  let julia = ref false in
+  let template_deg = ref 2 in
+  let sos_deg = ref 1 in
+  let sdp_prog_name = ref "" in
+  Arg.parse [
+    ("-o", Set_string out_file, "FILENAME  Output into FILENAME");
+    ("-sdpprogname", Set_string sdp_prog_name, "PROGNAME  Set SDP program name to PROGNAME");
+    ("-deg", Set_int template_deg, "DEG  Use polynomial templates of degree DEG");
+    ("-order", Set_int order, "K  Use ranking supermartingale for K-th moment (default: K = 2)");
+    ("-sosdeg", Set_int sos_deg, "SOSDEG  Use sos degree = SOS");
+    ("-julia", Set julia, "(not implemented) Enable julia output");
+  ] (fun s -> match !in_file with
+      | "" -> in_file := s
+      | _ -> failwith "one file at a time") usage_msg;
+  let in_file = match !in_file with
+    | "" -> failwith "no input file"
+    | s -> s in
+  let julia = !julia in
+  let template_deg = if !template_deg < 1 then failwith "template degree must be nonnegative" else !template_deg in
+  let order = if !order <= 0 then failwith "order must be positive" else !order in
   let file_name = try Filename.chop_extension (Filename.basename in_file) with _ -> in_file in
-  let out_file =
-    match search_argv "-o" @@  argvtl with
-    | None -> file_name ^ "_pp_poly_deg" ^ string_of_int template_deg ^ "_order" ^ string_of_int order ^ if julia then ".jl" else ".m" 
-    | Some o -> o in
-  let sos_deg = 
-    match search_argv "-sosdeg"  argvtl with
-    | None -> print_endline "sos degree = 1"; 1
-    | Some deg -> int_of_string deg in
-  let sdp_prog_name = 
-    match search_argv "-sdpprogname"  argvtl with
-    | None -> print_endline ("sdp prog name = " ^ file_name); file_name 
-    | Some name -> name in
-  if order <= 0 then Printf.eprintf "Error: order should be positive.\n" else
-  if template_deg < 1 then Printf.eprintf "Error: template degree should be: 0 <= deg.\n" else
+  let out_file = match !out_file with
+    | "" -> file_name ^ "_pp_poly_deg" ^ string_of_int template_deg ^ "_order" ^ string_of_int order ^ if julia then ".jl" else ".m"
+    | s -> s in
+  let sos_deg = !sos_deg in (* TODO check *)
+  let sdp_prog_name = if !sdp_prog_name = "" then file_name else !sdp_prog_name in
+  if Array.get Sys.argv 1 = "-distr_usage" then print_endline distributions_usage else
 (*  let tmpltype =
     if List.mem "-exp" argvtl || List.mem "-exponential" argvtl then EXP else
     if List.mem "-lin" argvtl || List.mem "-linear" argvtl then LIN else
