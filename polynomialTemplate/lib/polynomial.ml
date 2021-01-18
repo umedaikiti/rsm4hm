@@ -97,7 +97,7 @@ let v_int_list_of_monomial m = m
 
 (** operations on data type *)
 let mult_monomial m1 m2 = normalize_monomial @@ m1 @ m2
-let exp_monomial  (m: monomial) (j: int) = normalize_monomial @@ List.map (fun (x, i) -> (x, Pervasives.( * ) i j)) m
+let exp_monomial  (m: monomial) (j: int) = normalize_monomial @@ List.map (fun (x, i) -> (x, Stdlib.( * ) i j)) m
 let has_v_in_monomial arg_v monomial =
   List.fold_left (fun b (v, _) -> b || v = arg_v) false monomial
 let partition_monomial_by_v (m1: monomial) (arg_v: v) : (v * int) option * monomial =
