@@ -14,55 +14,64 @@ We assume that there is a ranking supermartingale that can be expressed by linea
 For more details, see [our paper](https://doi.org/10.1007/978-3-030-17465-1_8).
 
 ## Setup
-This program is written in OCaml. You need [GLPK](https://www.gnu.org/software/glpk/) for linear templates and [MATLAB](https://www.mathworks.com/products/matlab.html) for polynomial templates.
+This program is written in OCaml. You need [GLPK](https://www.gnu.org/software/glpk/) for linear templates and [SOSTOOLS](http://www.cds.caltech.edu/sostools/) for polynomial templates.
 
 We tested on the following environment but this program would also work on other platforms.
 - OS: Ubuntu 18.04.1
-- MATLAB R2018b
 - OCaml version 4.09.0
 - menhir version 20190924
+- MATLAB R2018b
+- SOSTOOLS 3.03
+- SDPT3 4.0
 
 ### For Ubuntu
-1. Download MATLAB from [MathWorks website](https://www.mathworks.com/downloads)
+1. Install required packages (ocaml, menhir).
+    ```
+    $ sudo apt install ocaml menhir
+    ```
 
-2. Install MATLAB and Symbolic Math Toolbox  
-Follow [Installation and Licensing
-Documentation](https://jp.mathworks.com/help/install/index.html).  
-The installer command (.../Install) requires superuser privileges. Use sudo.
+2. Compile.
+    ```
+    $ cd linearTemplate
+    $ make
+    $ cd ../polynomialTemplate
+    $ make
+    $ cd ../
+    ```
+3. Install GLPK.
+    ```
+    $ sudo apt install glpk-utils
+    ```
 
-3. Install required packages (ocaml, menhir, glpk)
-``` 
-$ sudo apt install ocaml menhir glpk-utils
-```
+4. Install SOSTOOLS.
 
-4. Install SDPT3
-```
-$ curl -O http://www.math.nus.edu.sg/~mattohkc/SDPT3-4.0.zip
-$ unzip SDPT3-4.0.zip
-$ cd SDPT3-4.0
-$ matlab -nojvm -nodisplay -nosplash -r "Installmex(1);exit"
-$ cd ../
-```
+    1. Download MATLAB from [MathWorks website](https://www.mathworks.com/downloads).
 
-5. Download SOSTOOLS
-```
-$ curl -O http://sysos.eng.ox.ac.uk/sostools/SOSTOOLS.303.zip
-$ unzip SOSTOOLS.303.zip
-```
+    2. Install MATLAB and Symbolic Math Toolbox  .
+        Follow [Installation and Licensing
+        Documentation](https://jp.mathworks.com/help/install/index.html).
+        The installer command (.../Install) requires superuser privileges. Use sudo.
 
-6. Compile
-```
-$ cd linearTemplate
-$ make
-$ cd ../polynomialTemplate
-$ make
-$ cd ../
-```
+    3. Install SDPT3.
+        ```
+        $ curl -O http://www.math.nus.edu.sg/~mattohkc/SDPT3-4.0.zip
+        $ unzip SDPT3-4.0.zip
+        $ cd SDPT3-4.0
+        $ matlab -nojvm -nodisplay -nosplash -r "Installmex(1);exit"
+        $ cd ../
+        ```
+
+    4. Download SOSTOOLS.
+        ```
+        $ curl -O http://sysos.eng.ox.ac.uk/sostools/SOSTOOLS.303.zip
+        $ unzip SOSTOOLS.303.zip
+        ```
+
 
 ## Usage
 
 ### Input
-There are several examples of input program in `sample`.
+There are several examples of input program in `sample` directory.
 
 Remark: for a technical reason, it is recommended to have a little margin when you write conditions in if branching. (to-do: explain)
 
@@ -70,8 +79,7 @@ Remark: for a technical reason, it is recommended to have a little margin when y
 By running the following commands, our linear template program generates a linear programming problem.
 ```
 $ cd artifact/linearTemplate
-$ ./compile ../test/
-random_walk_1d_intvalued.pp -order 2 -o random_walk_1d_intvalued.mod
+$ ./compile ../sample/random_walk_1d_intvalued.pp -order 2 -o random_walk_1d_intvalued.mod
 ```
 To solve this LP problem using GLPK:
 ```
@@ -84,7 +92,7 @@ The minimum value of the objective function is an upper bound of the second mome
 By running the following commands, our program generates a sum of square problem.
 ```
 $ cd artifact/
-$ ./poly_main ../test/random_walk_1d_intvalued.pp -deg 2 -order 2 -sosdeg 1
+$ ./poly_main ../sample/random_walk_1d_intvalued.pp -deg 2 -order 2 -sosdeg 1
 ```
 To solve the SOS problem:
 ```
