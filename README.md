@@ -99,3 +99,6 @@ To solve the SOS problem:
 $ matlab -nojvm -nodisplay -nosplash -r "init;random_walk_1d_intvalued_pp_poly_deg2_order2;exit"
 ```
 Please note that it may take much time to solve SOS problems.
+
+# Acknowledgement
+We thank the authors of "[Ranking and Repulsing Supermartingales for Reachability in Probabilistic Programs](https://doi.org/10.1007/978-3-030-01090-4_28)" for sharing their implementation, on which our implementation is largely based.
