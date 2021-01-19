@@ -1,22 +1,22 @@
 # A template based synthesizer of ranking supermartingales for higher moments
 This is an implementation of the method of our TACAS paper, "[Tail Probabilities for Randomized Program Runtimes via Martingales for Higher Moments](https://doi.org/10.1007/978-3-030-17465-1_8)".
 
-This program calculates an upper bound of (higher) moments of runtime (e.g. the expected runtime, the expected value of the square of runtime, or, in general, the k-th moment of runtime where k is an arbitrary natural number) of a given randomized program.
+Our tool calculates an upper bound of k-th moments of runtime E[T^k] of a given randomized program where k is a natural number and T is a random variable representing the runtime of the program.
 
-This program supports randomized programs with
+Our tool supports randomized programs with
 - sampling from discrete/continuous distributions, and
 - (demonic) nondeterminism.
 
 ## How does it work?
-This program reduces the problem of obtaining an upper bound to an LP/SDP problem using _ranking supermartingale for higher moments_ (or _ranking supermartingale for the k-th moment_ for some k).
-Ranking supermartingale for the k-th moment is a certain kind of functions on the set of states of the input randomized program, whose value gives an upper bound of the k-th moment of runtime.
-We assume that there is a ranking supermartingale that can be expressed by linear (or polynomial) functions and determine the coefficients by solving an LP (or SDP) problem.
+Our tool reduces the problem of obtaining an upper bound to an LP/SDP problem using _ranking supermartingale for higher moments_ (or _ranking supermartingale for the k-th moment_ for some k).
+Ranking supermartingales for the k-th moment are functions on the set of states of the input randomized program, whose value gives an upper bound of the k-th moment of runtime.
+If there is a ranking supermartingale that can be expressed by linear (or polynomial) functions, then our tool determines the coefficients of those functions by solving an LP (or SDP) problem.
 For more details, see [our paper](https://doi.org/10.1007/978-3-030-17465-1_8).
 
 ## Setup
-This program is written in OCaml. You need [GLPK](https://www.gnu.org/software/glpk/) for linear templates and [SOSTOOLS](http://www.cds.caltech.edu/sostools/) for polynomial templates.
+Our tool is written in OCaml. You need [GLPK](https://www.gnu.org/software/glpk/) for linear templates and [SOSTOOLS](http://www.cds.caltech.edu/sostools/) for polynomial templates.
 
-We tested on the following environment but this program would also work on other platforms.
+We tested on the following environment but our tool would also work on other platforms.
 - OS: Ubuntu 18.04.1
 - OCaml version 4.09.0
 - menhir version 20190924
@@ -89,7 +89,7 @@ The minimum value of the objective function is an upper bound of the second mome
 
 
 ### Polynomial template
-By running the following commands, our program generates a sum of square problem.
+By running the following commands, our tool generates a sum of square problem.
 ```
 $ cd artifact/
 $ ./poly_main ../sample/random_walk_1d_intvalued.pp -deg 2 -order 2 -sosdeg 1
