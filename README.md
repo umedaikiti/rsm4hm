@@ -78,7 +78,7 @@ Remark: for a technical reason, it is recommended to have a little margin when y
 ### Linear template
 By running the following commands, our linear template program generates a linear programming problem.
 ```
-$ cd artifact/linearTemplate
+$ cd linearTemplate
 $ ./compile ../sample/random_walk_1d_intvalued.pp -order 2 -o random_walk_1d_intvalued.mod
 ```
 To solve this LP problem using GLPK:
@@ -91,7 +91,7 @@ The minimum value of the objective function is an upper bound of the second mome
 ### Polynomial template
 By running the following commands, our tool generates a sum of square problem.
 ```
-$ cd artifact/
+$ cd polynomialTemplate
 $ ./poly_main ../sample/random_walk_1d_intvalued.pp -deg 2 -order 2 -sosdeg 1
 ```
 To solve the SOS problem:
