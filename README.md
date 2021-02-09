@@ -3,15 +3,7 @@ This is an implementation of the method of our TACAS paper, "[Tail Probabilities
 
 Our tool calculates an upper bound of k-th moments of runtime E[T^k] of a given randomized program where k is a natural number and T is a random variable representing the runtime of the program.
 
-Our tool supports randomized programs with
-- sampling from discrete/continuous distributions, and
-- (demonic) nondeterminism.
-
-## How does it work?
-Our tool reduces the problem of obtaining an upper bound to an LP/SDP problem using _ranking supermartingale for higher moments_ (or _ranking supermartingale for the k-th moment_ for some k).
-Ranking supermartingales for the k-th moment are functions on the set of states of the input randomized program, whose value gives an upper bound of the k-th moment of runtime.
-If there is a ranking supermartingale that can be expressed by linear (or polynomial) functions, then our tool determines the coefficients of those functions by solving an LP (or SDP) problem.
-For more details, see [our paper](https://doi.org/10.1007/978-3-030-17465-1_8).
+Our tool supports randomized programs with sampling from discrete/continuous distributions, and demonic nondeterminism (making runtime longer).
 
 ## Setup
 Our tool is written in OCaml. You need [GLPK](https://www.gnu.org/software/glpk/) for linear templates and [SOSTOOLS](http://www.cds.caltech.edu/sostools/) for polynomial templates.
@@ -99,6 +91,13 @@ To solve the SOS problem:
 $ matlab -nojvm -nodisplay -nosplash -r "init;random_walk_1d_intvalued_pp_poly_deg2_order2;exit"
 ```
 Please note that it may take much time to solve SOS problems.
+
+## How does it work?
+Our tool reduces the problem of obtaining an upper bound to an LP/SDP problem using _ranking supermartingale for higher moments_ (or _ranking supermartingale for the k-th moment_ for some k).
+Ranking supermartingales for the k-th moment are functions on the set of states of the input randomized program, whose value gives an upper bound of the k-th moment of runtime.
+If there is a ranking supermartingale that can be expressed by linear (or polynomial) functions, then our tool determines the coefficients of those functions by solving an LP (or SDP) problem.
+For more details, see [our paper](https://doi.org/10.1007/978-3-030-17465-1_8).
+
 
 ## Acknowledgement
 We thank the authors of "[Ranking and Repulsing Supermartingales for Reachability in Probabilistic Programs](https://doi.org/10.1007/978-3-030-01090-4_28)" for sharing their implementation, on which our implementation is largely based.
